@@ -1,0 +1,62 @@
+<header style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h1 style="font-size: 2rem; font-weight: 800;">Timeline</h1>
+        <p style="color: var(--text-muted)">Latest updates from the community</p>
+    </div>
+    {{#if user}}
+    <a href="/posts/create" class="btn btn-primary"><i class="fas fa-plus"></i> New Post</a>
+    {{/if}}
+</header>
+
+{{#if posts.length}}
+    {{#each posts}}
+    <div class="card post">
+        <div class="meta">
+            <strong>{{this.username}}</strong> • {{this.createdAt}}
+        </div>
+        <h3>{{this.title}}</h3>
+        {{#if this.image}}
+        <img src="{{this.image}}" alt="{{this.title}}">
+        {{/if}}
+        <p class="content">{{this.content}}</p>
+        
+        {{#if (eq ../user.id this.userId)}}
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+            <a href="/posts/edit/{{this.id}}" class="btn btn-outline" style="padding: 0.4rem 0.8rem; border-color: var(--text-muted); color: var(--text-muted);">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <form action="/posts/delete/{{this.id}}" method="POST" onsubmit="return confirm('Delete this post?')">
+                <button type="submit" class="btn btn-outline" style="padding: 0.4rem 0.8rem; border-color: #ef4444; color: #ef4444;"><i class="fas fa-trash"></i> Delete</button>
+            </form>
+        </div>
+        {{/if}}
+    </div>
+    {{/each}}
+
+    <!-- Pagination -->
+    {{#if (gt totalPages 1)}}
+    <div class="pagination">
+        {{#if hasPrev}}
+        <a href="/posts?page={{prevPage}}" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Previous</a>
+        {{/if}}
+        
+        <div style="align-self: center; font-weight: 600;">Page {{currentPage}} of {{totalPages}}</div>
+
+        {{#if hasNext}}
+        <a href="/posts?page={{nextPage}}" class="btn btn-outline">Next <i class="fas fa-arrow-right"></i></a>
+        {{/if}}
+    </div>
+    {{/if}}
+
+{{else}}
+<div class="card" style="text-align: center; padding: 4rem;">
+    <i class="fas fa-stream" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1.5rem; display: block;"></i>
+    <h2>No posts yet!</h2>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">Be the first one to share something with the world.</p>
+    {{#if user}}
+    <a href="/posts/create" class="btn btn-primary"><i class="fas fa-plus"></i> Create First Post</a>
+    {{else}}
+    <a href="/auth/login" class="btn btn-primary">Login to post</a>
+    {{/if}}
+</div>
+{{/if}}
